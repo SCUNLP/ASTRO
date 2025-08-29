@@ -18,10 +18,10 @@ def get_next_file_number(directory):
 def main():
     parser = argparse.ArgumentParser(description="Data preparing script")
 
-    parser.add_argument('--env_info_num',type=int, default=10, help="")#15
+    parser.add_argument('--env_info_num',type=int, default=10, help="")
     parser.add_argument('--llm_model_name', type=str, default="gpt-4o-2024-08-06", help='LLM model name for environment')
 
-    parser.add_argument("--num_files", type=int, default=50, help="Number of chat dialogues to generate.")#50
+    parser.add_argument("--num_files", type=int, default=50, help="Number of chat dialogues to generate.")
     parser.add_argument("--max_chat_rounds", type=int, default=8, help="Maximum number of chat rounds per file.")
 
     args = parser.parse_args()
@@ -29,13 +29,11 @@ def main():
     print("Generate prompts...")
     generate_and_save_prompts(args.llm_model_name)
 
-    return
     print("Generate environment information...")
     generate_env_info(args.env_info_num,args.llm_model_name)
 
     output_dir = "data/SFT-chat_history"
 
-    return
 
     os.makedirs(output_dir, exist_ok=True)
 

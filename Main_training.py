@@ -11,7 +11,6 @@ from RL_train import RL_train
 
 
 def SFT_train_seperate(args, sft_save_model_path):
-    # SFT 训练参数
     sft_params = {
         'chat_history_file_path': args.chat_history_file_path,
         'base_model_name': args.base_model_name,
@@ -25,7 +24,6 @@ def SFT_train_seperate(args, sft_save_model_path):
         'alpha': args.alpha
     }
 
-    # 开始训练
     print("Starting SFT training...")
     start_time = datetime.now()
     SFT_train(**sft_params)
@@ -35,15 +33,12 @@ def SFT_train_seperate(args, sft_save_model_path):
     
 
 def RL_train_seperate(args,base_dir,sft_save_model_path):
-    # RL模型保存路径
     rl_save_model_dir = os.path.join(base_dir, "rl_trained_model")
     os.makedirs(rl_save_model_dir, exist_ok=True)
 
-    # RL训练日志保存路径
     rl_log_save_dir = os.path.join(base_dir, "rl_training_log")
     os.makedirs(rl_log_save_dir, exist_ok=True)
 
-    # RL 训练参数
     rl_params = {
         'llm_model_name': args.llm_model_name,
         'model_load_pth': sft_save_model_path,
@@ -65,14 +60,11 @@ def RL_train_seperate(args,base_dir,sft_save_model_path):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Training script for SFT and RL models")
 
-    # 添加任务名称参数
     parser.add_argument('--task_name', type=str, required=True, help='Name of the task')
 
-    # 添加其他必要的参数
     parser.add_argument('--chat_history_file_path', type=str, default="data/SFT-chat_history/", help='Path to chat history file')
     parser.add_argument('--base_model_name', type=str, default="roberta-base", help='Base model name')
 
-    # SFT训练参数
     parser.add_argument('--batch_size', type=int, default=30, help='Batch size for SFT training')
     parser.add_argument('--sft_num_epochs', type=int, default=50, help='Number of epochs for SFT training')
     parser.add_argument('--learning_rate', type=float, default=5e-6, help='Learning rate for SFT training')
@@ -81,20 +73,17 @@ if __name__ == "__main__":
     parser.add_argument('--early_stopping_patience', type=int, default=20, help='Patience for early stopping')
     parser.add_argument('--alpha', type=float, default=0.3, help='Alpha parameter for SFT training')
 
-    # RL训练参数
     parser.add_argument('--llm_model_name', type=str, default="gpt-4o", help='LLM model name for environment')
     parser.add_argument('--LR', type=float, default=0.01, help='Learning rate for RL training')
-    parser.add_argument('--rl_num_episodes', type=int, default=100, help='Number of episodes for RL training')
+    parser.add_argument('--rl_num_episodes', type=int, default=500, help='Number of episodes for RL training')
     parser.add_argument('--gamma', type=float, default=0.99, help='Gamma parameter for RL training')
 
     args = parser.parse_args()
 
-    # 设置目录结构
     base_dir = os.path.join("model", args.task_name)
     os.makedirs(base_dir, exist_ok=True)
 
-    # SFT模型保存路径
     sft_save_model_path = os.path.join(base_dir, "SFT_trained_model.pth")
-    # SFT_train_seperate(args, sft_save_model_path)
-    # sft_save_model_path = os.path.join(base_dir, "rl_trained_model.pth")
+    SFT_train_seperate(args, sft_save_model_path)
+    sft_save_model_path = os.path.join(base_dir, "rl_trained_model.pth")
     model , score_list = RL_train_seperate(args,base_dir,sft_save_model_path)
